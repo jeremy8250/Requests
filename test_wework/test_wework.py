@@ -9,7 +9,7 @@ class TestWeWork:
     token = None
 
     # 获取token
-    @classmethod
+    @classmethod
     def setup_class(cls):
         cls.membertools = MemberTools()
         # 传入secrect key，返回对应的token值
