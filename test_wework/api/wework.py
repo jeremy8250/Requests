@@ -11,10 +11,11 @@ class WeWork(BaseApi):
     corpid = "ww73ab17f6d262cc84"
     token = dict()
     token_time = dict()
+    secret = "OJHobYXhKQjB2FV0cPe1LffCd7J1rqP8xNUBFQ87O68"
 
     # 每个token需要有不同的secret
     @classmethod
-    def get_token(cls, secret=None):
+    def get_token(cls, secret=secret):
         if secret is None:
             # todo: token制度发生变化，在这个地方决定是否重新获取
             return cls.token[secret]
