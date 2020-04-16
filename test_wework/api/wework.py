@@ -3,8 +3,10 @@ import json
 
 import requests
 
+from test_wework.api.base_api import BaseApi
 
-class WeWork:
+
+class WeWork(BaseApi):
     token_url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
     corpid = "ww73ab17f6d262cc84"
     token = dict()
@@ -33,6 +35,4 @@ class WeWork:
         assert r.json()["errcode"] == 0
         return r.json()
 
-    @classmethod
-    def format(cls, r):
-        print(json.dumps(r.json(), indent=2))
+

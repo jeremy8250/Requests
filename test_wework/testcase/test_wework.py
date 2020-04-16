@@ -1,8 +1,15 @@
+import random
+
 from test_wework.api.membertools import MemberTools
 from test_wework.api.wework import WeWork
 
 
 class TestWeWork:
+    tail_num = str(random.randint(1000, 9999))
+    USERID = "ACCT" + tail_num
+    NAME = "Test_Dev" + tail_num
+    MOBILE = "1388888" + tail_num
+
 
     @classmethod
     def setup_class(cls):
@@ -18,5 +25,5 @@ class TestWeWork:
 
     # 测试添加新成员
     def test_add_member(self):
-        r = self.membertools.add(USERID="ACCT1241", NAME="testdev1241", MOBILE="13812423838")
+        r = self.membertools.add(USERID=self.USERID, NAME=self.NAME, MOBILE=self.MOBILE)
         assert r["errcode"] == 0
