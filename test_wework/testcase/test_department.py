@@ -18,14 +18,13 @@ class TestDepartment:
         assert r["errcode"] == 0
 
     def test_update_department(self):
-        r = self.department.update(id="7", name="testDev_abc")
+        r = self.department.update(id="8", name="testDev_abc")
         assert r["errcode"] == 0
 
     def test_remove_department(self):
-        r = self.department.remove(id="7")
+        r = self.department.remove(id="8")
         assert r["errcode"] == 0
 
     def test_query_department(self):
         r = self.department.query()
         assert r["errcode"] == 0
-        print(r)

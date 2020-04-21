@@ -17,7 +17,6 @@ class Token:
             cls.token[corpsecret] = r['access_token']
         return cls.token[corpsecret]
 
-
     @classmethod
     def get_access_token(cls, corpsecret):
         params = {"corpid": cls.corpid, "corpsecret": corpsecret}

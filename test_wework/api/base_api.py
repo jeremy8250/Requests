@@ -1,13 +1,21 @@
 import json
 
 import yaml
+from jsonpath import jsonpath
 from requests import Request
 
 
 class BaseApi:
     @classmethod
     def format(cls, r):
-        print(json.dumps(r.json(), indent=2))
+        # 把r缓存到cls.r
+        cls.r = r
+        print(json.dumps(r.json(), indent=2, ensure_ascii=False))
+
+    def jsonpath(self, path, r=None):
+        if r is None:
+            r = self.r.json()
+        return jsonpath(r, path)
 
     # todo: 封装类似httprunner这样的数据驱动框架
     def steps(self, path):

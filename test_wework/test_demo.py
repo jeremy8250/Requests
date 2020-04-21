@@ -5,6 +5,7 @@ from jsonpath import jsonpath
 
 
 class TestDemo:
+
     def test_jsonpath(self):
         r = requests.get("https://home.testing-studio.com/categories.json")
         # print(json.dumps(r.json(), indent=2, ensure_ascii=False))
