@@ -17,13 +17,17 @@ class BaseApi:
             r = self.r.json()
         return jsonpath(r, path)
 
-    # todo: 封装类似httprunner这样的数据驱动框架
+    # 封装yaml文件的加载
+    @classmethod
+    def yaml_load(cls, path) -> list:
+        with open(path) as f:
+            return yaml.safe_load(f)
+
     def steps(self, path):
         with open(path, encoding="utf-8") as f:
-            # 加了encoding可以防止yaml中文乱码
+            # 读取步骤定义文件
             steps: list[dict] = yaml.safe_load(f)
-            # 读取steps.yaml文件到steps
-            # steps为列表中包着词典的类型
+            # 保存一个目标对象
             request: Request = None
             # 找元素找元素，首页需要有元素
             for step in steps:

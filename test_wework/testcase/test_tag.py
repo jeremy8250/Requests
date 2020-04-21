@@ -1,10 +1,14 @@
 import pytest
 from jsonpath import jsonpath
 
+from test_wework.api.base_api import BaseApi
 from test_wework.api.tag import Tag
 
 
 class TestTag:
+    # 加载yaml文件中的data
+    data = BaseApi.yaml_load("test_tag.data.yaml")
+
     @classmethod
     def setup(cls):
         cls.tag = Tag()
@@ -23,7 +27,8 @@ class TestTag:
     def test_update_tag(self):
         pass
 
-    @pytest.mark.parametrize("name", ["demo1", "中文测试", "中文_1", "123", " ", "*", "👿", ""])
+    # @pytest.mark.parametrize("name", ["demo1", "中文测试", "中文_1", "123", " ", "*", "👿", ""])
+    @pytest.mark.parametrize("name", data["test_delete"])
     def test_delete_tag(self, name):
         # 如果有就删除
         r = self.tag.get_tag_list()
