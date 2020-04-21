@@ -1,3 +1,4 @@
+import pytest
 from jsonpath import jsonpath
 
 from test_wework.api.tag import Tag
@@ -22,9 +23,8 @@ class TestTag:
     def test_update_tag(self):
         pass
 
-    def test_delete_tag(self):
-        name = "demo2"
-
+    @pytest.mark.parametrize("name", ["demo1", "中文测试", "中文_1", "123", " ", "*", "👿", ""])
+    def test_delete_tag(self, name):
         # 如果有就删除
         r = self.tag.get_tag_list()
         x = self.tag.jsonpath(f"$..tag[?(@.name=='{name}')]")
@@ -55,6 +55,8 @@ class TestTag:
 
     @classmethod
     def reset(cls):
+        # grt_tag_list后传入r值
+        cls.tag.get_tag_list()
         for name in ['demo1', 'demo2']:
             x = cls.tag.jsonpath(f"$..tag[?(@.name=='{name}')]")
             if isinstance(x, list) and len(x) > 0:
