@@ -1,5 +1,6 @@
 import json
 
+import requests
 import yaml
 from jsonpath import jsonpath
 from requests import Request
@@ -22,6 +23,18 @@ class BaseApi:
     def yaml_load(cls, path) -> list:
         with open(path) as f:
             return yaml.safe_load(f)
+
+    def api_load(self, path):
+        # 将yaml文件读取进来,读取后变成字典格式
+        return self.yaml_load(path)
+
+    def api_send(self, req: dict):
+        # 从WeWork中的get_token方法中获取access_token
+        req['params']['access_token'] = self.get_token(self.secret)
+        # 从req这个字典里面取出key对应的值
+        r = requests.request(req['method'], url=req['url'], params=req['params'], json=req['json'])
+        print(req)
+        return r.json()
 
     def steps(self, path):
         with open(path, encoding="utf-8") as f:
