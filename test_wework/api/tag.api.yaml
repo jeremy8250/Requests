@@ -7,3 +7,12 @@ get:
     access_token: ${token}
   json:
     tag_id: []
+
+add:
+  method: post
+  url: https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag
+  params: {} # 封装access_token
+  json:
+    group_id: ettnklBgAAvsVoVWA4V7LqnOn_IxDFQw # 固定值不变
+    tag:
+      - name: ${name} # 数组需要用'-'表示

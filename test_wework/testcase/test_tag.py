@@ -16,13 +16,14 @@ class TestTag:
         # 测试开始前清空测试数据
         cls.reset()
 
-    def test_get_tag_list(self):
-        r = self.tag.get_tag_list()
-        assert r["errcode"] == 0
-        print(self.tag.jsonpath("$..tag[?(@.name!='')]"))
+    # def test_get_tag_list(self):
+    #     r = self.tag.get_tag_list()
+    #     assert r["errcode"] == 0
+    #     print(self.tag.jsonpath("$..tag[?(@.name!='')]"))
 
-    def test_get_tag_api(self):
+    def test_get_tag(self):
         r = self.tag.get_api()
+        assert r["errcode"] == 0
 
     def test_add_tag(self):
         r = self.tag.add_tag("demo2")

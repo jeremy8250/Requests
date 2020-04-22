@@ -7,6 +7,9 @@ from requests import Request
 
 
 class BaseApi:
+    # 定义一个params字典，用以存放数据给yaml中的变量
+    params = {}
+
     @classmethod
     def format(cls, r):
         # 把r缓存到cls.r
@@ -31,9 +34,21 @@ class BaseApi:
     def api_send(self, req: dict):
         # 从WeWork中的get_token方法中获取access_token
         req['params']['access_token'] = self.get_token(self.secret)
+
+        raw = yaml.dump(req)
+        for key, value in self.params.items():
+            raw = raw.replace(f"${{{key}}}", value)
+            print("replace")
+        req = yaml.safe_load(raw)
+
         # 从req这个字典里面取出key对应的值
-        r = requests.request(req['method'], url=req['url'], params=req['params'], json=req['json'])
-        print(req)
+        r = requests.request(
+            req['method'],
+            url=req['url'],
+            params=req['params'],
+            json=req['json']
+        )
+        self.format(r)
         return r.json()
 
     def steps(self, path):
