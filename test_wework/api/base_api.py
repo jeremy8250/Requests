@@ -9,6 +9,8 @@ from requests import Request
 class BaseApi:
     # 定义一个params字典，用以存放数据给yaml中的变量
     params = {}
+    # 临时存储词典
+    data = {}
 
     @classmethod
     def format(cls, r):
@@ -16,29 +18,32 @@ class BaseApi:
         cls.r = r
         print(json.dumps(r.json(), indent=2, ensure_ascii=False))
 
-    def jsonpath(self, path, r=None):
+    def jsonpath(self, path, r=None, **kwargs):
         if r is None:
             r = self.r.json()
         return jsonpath(r, path)
 
     # 封装yaml文件的加载
     @classmethod
+    # 指定yaml加载后返回一个List类型
     def yaml_load(cls, path) -> list:
         with open(path) as f:
             return yaml.safe_load(f)
 
+    # 将yaml文件读取进来,读取后变成字典格式
     def api_load(self, path):
-        # 将yaml文件读取进来,读取后变成字典格式
         return self.yaml_load(path)
 
     def api_send(self, req: dict):
-        # 从WeWork中的get_token方法中获取access_token
+        # 从wework.get_token方法中获取access_token
         req['params']['access_token'] = self.get_token(self.secret)
 
+        # 将yaml结构化数据转换成字符串
         raw = yaml.dump(req)
+        # 将parms字典中的value替换yaml中的带有${key}的值
         for key, value in self.params.items():
-            raw = raw.replace(f"${{{key}}}", value)
-            print("replace")
+            raw = raw.replace(f"${{{key}}}", repr(value))
+        # 转成yaml结构化数据
         req = yaml.safe_load(raw)
 
         # 从req这个字典里面取出key对应的值
@@ -51,44 +56,49 @@ class BaseApi:
         self.format(r)
         return r.json()
 
-    def steps(self, path):
-        with open(path, encoding="utf-8") as f:
-            # 读取步骤定义文件
-            steps: list[dict] = yaml.safe_load(f)
-            # 保存一个目标对象
-            request: Request = None
-            # 找元素找元素，首页需要有元素
-            for step in steps:
-                # logging.info(step)
-                if "by" in step.keys():
-                    # 如果在step的key有by
-                    element = self.find(step["by"], step["locator"])
-                    # 找到by对应的定位方法，找到locator对用的定位符，传给element(这个element类型为WebElement)
-                if "action" in step.keys():
-                    # 如果在step的key有action
-                    action = step["action"]
-                    # 取action的值
-                    if action == "click":
-                        # 如果action为click方法
-                        element.click()
-                        # 点击元素
-                    elif action == "text":
-                        # 如果action为text方法
-                        element.text
-                        # 获取元素的文本
-                    elif action == "attribute":
-                        # 如果action为attribute方法
-                        element.get_attribute(step["value"])
-                        # 获取元素的value属性值
-                    elif action == "send":
-                        # 如果action为send方法
-                        content: str = step["value"]
-                        # content为send对应的value
-                        # 指定content类型为str，才能调用replace()
-                        for key in self._params.keys():
-                            # 循环遍历所有外部传入的参数
-                            content = content.replace("{%s}" % key, self._params[key])
-                            # 将外部传入的参数批量替换{}里面的内容
-                            # {}为send对应的value值(如value: "{key}")
-                        element.send_keys(content)
-                        # 发送替换的内容
+    def steps_run(self, steps: list):
+        for step in steps:
+            print(step)
+            # 将yaml结构化数据转换成字符串
+            raw = yaml.dump(step)
+            # 将parms字典中的value替换yaml中的带有${key}的值
+            for key, value in self.params.items():
+                raw = raw.replace(f"${{{key}}}", repr(value))
+            # 转成yaml结构化数据
+            step = yaml.safe_load(raw)
+
+            if isinstance(step, dict):
+                if "method" in step.keys():
+                    method = step['method'].split('.')[-1]
+                    getattr(self, method)(**step)
+                if "extract" in step.keys():
+                    self.data[step["extract"]] = getattr(self, 'jsonpath')(**step)
+                    print("extract")
+                    print(self.data[step["extract"]])
+
+                if "assertion" in step.keys():
+                    assertion = step["assertion"]
+                    if assertion[1] == 'eq':
+                        assert assertion[0] == assertion[2]
+
+
+        # # 从wework.get_token方法中获取access_token
+        # req['params']['access_token'] = self.get_token(self.secret)
+        #
+        # # 将yaml结构化数据转换成字符串
+        # raw = yaml.dump(req)
+        # # 将parms字典中的value替换yaml中的带有${key}的值
+        # for key, value in self.params.items():
+        #     raw = raw.replace(f"${{{key}}}", repr(value))
+        # # 转成yaml结构化数据
+        # req = yaml.safe_load(raw)
+        #
+        # # 从req这个字典里面取出key对应的值
+        # r = requests.request(
+        #     req['method'],
+        #     url=req['url'],
+        #     params=req['params'],
+        #     json=req['json']
+        # )
+        # self.format(r)
+        # return r.json()
