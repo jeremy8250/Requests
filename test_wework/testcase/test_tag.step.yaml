@@ -4,5 +4,4 @@
   - {method: tag.add_tag, name: "${name}"}
   - {method: tag.get_tag_list}
   - {path: "$..tag[?(@.name==${name})]", extract: after}
-#
   - {assertion: "1, eq, 2"}
