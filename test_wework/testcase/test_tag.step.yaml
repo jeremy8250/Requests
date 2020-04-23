@@ -1,4 +1,7 @@
 "test_delete":
-  - {}
-  - {}
-  - {}
+  - {method: tag.get_tag_list}
+  - {path: "$..tag[?(@.name==${name})]", extract: before}
+  - {method: tag.add_tag, name: "${name}"}
+  - {method: tag.get_tag_list}
+  - {path: "$..tag[?(@.name==${name})]", extract: after}
+  - {assertion: [1, eq, 1]}

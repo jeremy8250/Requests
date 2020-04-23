@@ -11,7 +11,7 @@ class Tag(WeWork):
         # 将文件加载到self.data中
         self.data = self.api_load("../api/tag.api.yaml")
 
-    def get_tag_list(self):
+    def get_tag_list(self, **kwargs):
         # 把tag.api.yaml文件中的get请求读取进来，通过api.send发送请求
         return self.api_send(self.data['get'])
 
@@ -23,6 +23,7 @@ class Tag(WeWork):
     #     return r.json()
 
     def add_tag(self, name, **kwargs):
+        # 将testcase中的name参数值传入parm字典中的中name对应的value
         self.params['name'] = name
         return self.api_send(self.data['add'])
 
@@ -39,8 +40,13 @@ class Tag(WeWork):
         pass
 
     def delete_tag(self, tag_id=[], group_id=[]):
-        delete_url = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag"
-        data = {"group_id": group_id, "tag_id": tag_id}
-        r = requests.post(delete_url, params={"access_token": self.get_token(self.secret)}, json=data)
-        self.format(r)
-        return r.json()
+        self.params['tag_id'] = tag_id
+        self.params['group_id'] = group_id
+        return self.api_send(self.data['delete'])
+
+    # def delete_tag(self, tag_id=[], group_id=[]):
+    #     delete_url = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag"
+    #     data = {"group_id": group_id, "tag_id": tag_id}
+    #     r = requests.post(delete_url, params={"access_token": self.get_token(self.secret)}, json=data)
+    #     self.format(r)
+    #     return r.json()
