@@ -34,6 +34,13 @@ class BaseApi:
     def api_load(self, path):
         return self.yaml_load(path)
 
+    def encode_base64(self):
+        pass
+
+    def decode_base64(self, content):
+        # todo: 把加密后的内容，解密，并声称一个结构化的数据返回
+        return content
+
     def api_send(self, req: dict):
         # 从wework.get_token方法中获取access_token
         req['params']['access_token'] = self.get_token(self.secret)
@@ -46,6 +53,9 @@ class BaseApi:
         # 转成yaml结构化数据
         req = yaml.safe_load(raw)
 
+        # todo: 发送前加密
+        # req["xx"] = self.encode_base64()
+
         # 从req这个字典里面取出key对应的值
         r = requests.request(
             req['method'],
@@ -54,6 +64,10 @@ class BaseApi:
             json=req['json']
         )
         self.format(r)
+
+        # todo: 解密返回的内容
+        # return self.decode_base64(r.content)
+
         return r.json()
 
     def steps_run(self, steps: list):
@@ -82,7 +96,6 @@ class BaseApi:
                     #     assert eval(assertion, str)
                     if assertion[1] == 'eq':
                         assert assertion[0] == assertion[2]
-
 
         # # 从wework.get_token方法中获取access_token
         # req['params']['access_token'] = self.get_token(self.secret)
