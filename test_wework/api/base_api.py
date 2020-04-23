@@ -58,7 +58,7 @@ class BaseApi:
 
     def steps_run(self, steps: list):
         for step in steps:
-            print(step)
+            # print(step)
             # 将yaml结构化数据转换成字符串
             raw = yaml.dump(step)
             # 将parms字典中的value替换yaml中的带有${key}的值
@@ -73,11 +73,13 @@ class BaseApi:
                     getattr(self, method)(**step)
                 if "extract" in step.keys():
                     self.data[step["extract"]] = getattr(self, 'jsonpath')(**step)
-                    print("extract")
-                    print(self.data[step["extract"]])
+                    # print("extract")
+                    # print(self.data[step["extract"]])
 
                 if "assertion" in step.keys():
                     assertion = step["assertion"]
+                    # if isinstance(assertion, str):
+                    #     assert eval(assertion, str)
                     if assertion[1] == 'eq':
                         assert assertion[0] == assertion[2]
 

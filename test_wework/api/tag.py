@@ -4,6 +4,20 @@ from test_wework.api.base_api import BaseApi
 from test_wework.api.wework import WeWork
 
 
+# 装饰器定义
+def api(fun):  # 接收fun函数传参
+    def magic(*args, **kwargs):
+        base_api: BaseApi = args[0]  # args[0]代表将BaseApi这个类的实例保存到base_api中
+
+        method = fun.__name__  # yaml中的方法名(get/add/delete)=函数名
+
+        base_api.params = kwargs  # 传参
+        req = base_api.api_load("../api/tag.api.yaml")[method]  # 加载api.yaml文件,从中找到对应的method
+        return base_api.api_send(req)  # 发送请求
+
+    return magic
+
+
 class Tag(WeWork):
     secret = "EZLTFy1FzA7156tchVfT_xW7B6YKDqI5xXQ2TQpWlIg"
 
@@ -50,3 +64,7 @@ class Tag(WeWork):
     #     r = requests.post(delete_url, params={"access_token": self.get_token(self.secret)}, json=data)
     #     self.format(r)
     #     return r.json()
+
+    @api
+    def xxx(self, age):
+        pass

@@ -58,13 +58,13 @@ class TestTag:
     #     r = self.tag.get_tag_list()
     #     assert len(self.tag.jsonpath(path)) == size
 
-    @pytest.mark.parametrize("name", data["test_delete"][1:2])
-    def test_delete_tag(self, name):
-        # 如果有就删除
-        r = self.tag.get_tag_list()
-        x = self.tag.jsonpath(f"$..tag[?(@.name=='{name}')]")
-        if isinstance(x, list) and len(x) > 0:
-            self.tag.delete_tag(tag_id=[x[0]['id']])
+    # @pytest.mark.parametrize("name", data["test_delete"])
+    # def test_delete_tag(self, name):
+    #     # 如果有就删除
+    #     r = self.tag.get_tag_list()
+    #     x = self.tag.jsonpath(f"$..tag[?(@.name=='{name}')]")
+    #     if isinstance(x, list) and len(x) > 0:
+    #         self.tag.delete_tag(tag_id=[x[0]['id']])
 
 
         # # 环境干净后开始测试
@@ -105,3 +105,7 @@ class TestTag:
             x = cls.tag.jsonpath(f"$..tag[?(@.name=='{name}')]")
             if isinstance(x, list) and len(x) > 0:
                 cls.tag.delete_tag(tag_id=[x[0]['id']])
+
+    # 测试装饰器
+    def test_xxx(self):
+        self.tag.xxx()
